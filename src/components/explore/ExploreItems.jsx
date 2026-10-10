@@ -5,6 +5,7 @@ import NftCard from "../UI/NftCard";
 
 const ExploreItems = () => {
   const [items, setItems] = useState([]);
+  const [visibleItems, setVisibleItems] = useState(8);
 
   async function fetchItems() {
     const { data } = await axios.get(
@@ -27,7 +28,7 @@ const ExploreItems = () => {
           <option value="likes_high_to_low">Most liked</option>
         </select>
       </div>
-      {items.map((item) => (
+      {items.slice(0, visibleItems).map((item) => (
         <div
           key={item.id}
           className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12"
@@ -36,11 +37,18 @@ const ExploreItems = () => {
           <NftCard item={item} />
         </div>
       ))}
-      <div className="col-md-12 text-center">
-        <Link to="" id="loadmore" className="btn-main lead">
-          Load more
-        </Link>
-      </div>
+      {visibleItems < items.length && (
+        <div className="col-md-12 text-center">
+          <Link
+            to=""
+            id="loadmore"
+            className="btn-main lead"
+            onClick={() => setVisibleItems(visibleItems + 4)}
+          >
+            Load more
+          </Link>
+        </div>
+      )}
     </>
   );
 };
