@@ -2,16 +2,19 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import NftCard from "../UI/NftCard";
+import NftCardSkeleton from "../UI/NftCardSkeleton";
 
 const ExploreItems = () => {
   const [items, setItems] = useState([]);
   const [visibleItems, setVisibleItems] = useState(8);
+  const [loading, setLoading] = useState(true);
 
   async function fetchItems() {
     const { data } = await axios.get(
       "https://us-central1-nft-cloud-functions.cloudfunctions.net/explore"
     );
     setItems(data);
+    setLoading(false);
   }
 
   useEffect(() => {
@@ -28,15 +31,25 @@ const ExploreItems = () => {
           <option value="likes_high_to_low">Most liked</option>
         </select>
       </div>
-      {items.slice(0, visibleItems).map((item) => (
-        <div
-          key={item.id}
-          className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12"
-          style={{ display: "block", backgroundSize: "cover" }}
-        >
-          <NftCard item={item} />
-        </div>
-      ))}
+      {loading
+        ? new Array(8).fill(0).map((_, index) => (
+            <div
+              key={index}
+              className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12"
+              style={{ display: "block", backgroundSize: "cover" }}
+            >
+              <NftCardSkeleton />
+            </div>
+          ))
+        : items.slice(0, visibleItems).map((item) => (
+            <div
+              key={item.id}
+              className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12"
+              style={{ display: "block", backgroundSize: "cover" }}
+            >
+              <NftCard item={item} />
+            </div>
+          ))}
       {visibleItems < items.length && (
         <div className="col-md-12 text-center">
           <Link
