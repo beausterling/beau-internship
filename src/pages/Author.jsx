@@ -7,6 +7,7 @@ import axios from "axios";
 const Author = () => {
   const { id } = useParams();
   const [author, setAuthor] = useState({});
+  const [following, setFollowing] = useState(false);
 
   useEffect(() => {
     async function fetchAuthor() {
@@ -61,10 +62,15 @@ const Author = () => {
                   <div className="profile_follow de-flex">
                     <div className="de-flex-col">
                       <div className="profile_follower">
-                        {author.followers} followers
+                        {following ? author.followers + 1 : author.followers}{" "}
+                        followers
                       </div>
-                      <Link to="#" className="btn-main">
-                        Follow
+                      <Link
+                        to="#"
+                        className="btn-main"
+                        onClick={() => setFollowing(!following)}
+                      >
+                        {following ? "Unfollow" : "Follow"}
                       </Link>
                     </div>
                   </div>
